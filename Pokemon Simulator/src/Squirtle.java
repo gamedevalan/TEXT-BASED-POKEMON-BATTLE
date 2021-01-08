@@ -2,10 +2,10 @@ public class Squirtle extends Pokemon {
    private static String[] moveName = new String[] { "Tackle", "Water Gun" };
    private static int[] moveDamage = new int[] { 40, 40 };
    private static Type[] moveType = new Type[] { Type.NORMAL, Type.WATER };
-   private static int[] stats = new int[] { 20, 9, 13, 12, 12, 10 };
+   private static int[] stats = new int[] { 44, 48, 65, 50, 64, 43 };
 
-   public Squirtle(String name) {
-      super(name);
+   public Squirtle() {
+      super("SQUIRTLE");
       setType(Type.WATER);
       setMoves(moveName);
       setMoveDamage(moveDamage);
@@ -31,5 +31,15 @@ public class Squirtle extends Pokemon {
 
    public void setStats(int[] stats) {
       super.setStats(stats);
+   }
+
+   public double effectiveness(Type type) {
+      if (type == Type.GRASS || type == Type.ELECTRIC) {
+         return 2.0;
+      } else if (type == Type.WATER || type == Type.FIRE) {
+         return 0.5;
+      } else {
+         return 1.0;
+      }
    }
 }

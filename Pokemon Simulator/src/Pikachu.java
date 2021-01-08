@@ -2,10 +2,10 @@ public class Pikachu extends Pokemon {
    private static String[] moveName = new String[] { "Tackle", "ThunderShock" };
    private static int[] moveDamage = new int[] { 40, 40 };
    private static Type[] moveType = new Type[] { Type.NORMAL, Type.ELECTRIC };
-   private static int[] stats = new int[] { 20, 13, 10, 11, 9, 15 };
+   private static int[] stats = new int[] { 35, 55, 30, 50, 40, 90 };
 
-   public Pikachu(String name) {
-      super(name);
+   public Pikachu() {
+      super("PIKACHU");
       setType(Type.ELECTRIC);
       setMoves(moveName);
       setMoveDamage(moveDamage);
@@ -31,6 +31,10 @@ public class Pikachu extends Pokemon {
 
    public void setStats(int[] stats) {
       super.setStats(stats);
+   }
+
+   public double effectiveness(Type type) {
+      return 1.0;
    }
 
 }

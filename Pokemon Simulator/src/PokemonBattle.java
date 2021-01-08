@@ -44,24 +44,24 @@ public class PokemonBattle {
 
    public static Pokemon createPokemon(int choice) {
       if (choice == 1) {
-         return new Bulbasaur("BULBASAUR");
+         return new Bulbasaur();
       } else if (choice == 2) {
-         return new Charmander("CHARMANDER");
+         return new Charmander();
       } else if (choice == 3) {
-         return new Squirtle("SQUIRTLE");
+         return new Squirtle();
       } else if (choice == 4) {
-         return new Pikachu("PIKACHU");
+         return new Pikachu();
       } else {
-         return new Eevee("EEVEE");
+         return new Eevee();
       }
    }
 
    public static void createEnemies(Pokemon[] enemies) {
-      enemies[0] = new Bulbasaur("BULBASAUR");
-      enemies[1] = new Charmander("CHARMANDER");
-      enemies[2] = new Squirtle("SQUIRTLE");
-      enemies[3] = new Pikachu("PIKACHU");
-      enemies[4] = new Eevee("EEVEE");
+      enemies[0] = new Bulbasaur();
+      enemies[1] = new Charmander();
+      enemies[2] = new Squirtle();
+      enemies[3] = new Pikachu();
+      enemies[4] = new Eevee();
    }
 
    public static boolean playPokemon(Scanner scan, Random rand, Pokemon player, Pokemon[] enemies) {
@@ -99,7 +99,6 @@ public class PokemonBattle {
                playing = false;
                return true;
             }
-
          }
       }
       return false;
@@ -123,6 +122,7 @@ public class PokemonBattle {
          for (int num = 1; num <= player.numMoves(); num++) {
             System.out.println(num + ". " + player.getMove(num));
          }
+         System.out.print("Enter number: ");
          moveChoice = scan.nextLine().charAt(0);
          if (!(moveChoice > '0' && moveChoice <= (char) (48 + player.numMoves()))) {
             System.out.print("Not a valid number. ");
@@ -144,7 +144,6 @@ public class PokemonBattle {
             turnOrder[1] = "Player";
          }
       }
-
    }
 
    // What moves were chosen?
@@ -203,7 +202,8 @@ public class PokemonBattle {
    // Change the health status
    public static void turn(String who, int[] opponentStats, Pokemon currentPokemon,
          Pokemon opponentPokemon, int moveChoice, int attackerStat, int defenderStat, Random rand) {
-      int damage = getDamage(currentPokemon, moveChoice, attackerStat, defenderStat, rand);
+      int damage = calculateDamage(attackerStat, defenderStat, opponentPokemon, currentPokemon,
+            moveChoice, rand);
       opponentStats[HEALTH_POINTS] -= damage;
       if (who.equals("PLAYER")) {
          System.out.print("The opposing ");
@@ -211,26 +211,35 @@ public class PokemonBattle {
       System.out.println(opponentPokemon.getName() + " took " + damage + " damage!");
    }
 
-   // Get the damage
-   public static int getDamage(Pokemon currentPokemon, int moveChoice, int attackerStat,
-         int defenderStat, Random rand) {
-      return calculateDamage(attackerStat, defenderStat, currentPokemon.getDamage(moveChoice),
-            currentPokemon.getMoveType(moveChoice) == currentPokemon.getMyType(), rand);
-   }
-
    // Calculate the damage number integer
-   public static int calculateDamage(int attackStat, int defenseStat, int moveDamage,
-         boolean isSTAB, Random rand) {
-      final int LEVEL = 5;
+   public static int calculateDamage(int attackStat, int defenseStat, Pokemon opponentPokemon,
+         Pokemon currentPokemon, int moveChoice, Random rand) {
 
-      double STAB = isSTAB ? 1.5 : 1; // Same Type Attack Bonus
-      int damage = (((2 * LEVEL) / 5 + 2) * moveDamage * attackStat / defenseStat) / 50 + 2;
+      double STAB = currentPokemon.getMoveType(moveChoice) == currentPokemon.getMyType() ? 1.5 : 1; // Same
+                                                                                                    // Type
+                                                                                                    // Attack
+                                                                                                    // Bonus
+      int damage = (((2 * currentPokemon.getLevel()) / 5 + 2) * currentPokemon.getDamage(moveChoice)
+            * attackStat / defenseStat) / 50 + 2;
       double randomFactor = (85 + rand.nextInt(100 - 85 + 1)) / 100.0;
-      double modifiers = Math.round(STAB * randomFactor * 10.0) / 10.0;
-      damage = (int) ((Math.round(damage * modifiers * 10.0)) / 10.0);
+      double modifiers = (int) (STAB * randomFactor
+            * typeEffectiveness(opponentPokemon, currentPokemon, moveChoice) * 10.0) / 10.0;
+      damage = (int) ((damage * modifiers));
       damage = damage < 1 ? 1 : damage; // if damage is less than 1, do some damage
       return damage;
+   }
 
+   public static double typeEffectiveness(Pokemon opponentPokemon, Pokemon currentPokemon,
+         int moveChoice) {
+      // Determines the effectiveness of a move to add to the multiplier
+      double typeEffectiveness = opponentPokemon
+            .effectiveness(currentPokemon.getMoveType(moveChoice));
+      if (typeEffectiveness == 0.5) {
+         System.out.println("It's not very effective...");
+      } else if (typeEffectiveness == 2.0) {
+         System.out.println("It's super effective!");
+      }
+      return typeEffectiveness;
    }
 
    public static boolean keepPlaying(Scanner scan) {
@@ -241,9 +250,9 @@ public class PokemonBattle {
    }
 
    public static boolean switchPokemon(Scanner scan) {
-      System.out.print("Would you like to switch Pokemons? ");
-      System.out.println();
+      System.out.print("Would you like to switch Pokemon? ");
       char answer = scan.nextLine().toLowerCase().charAt(0);
+      System.out.println();
       return answer == 'y';
    }
 }

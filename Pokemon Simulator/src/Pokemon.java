@@ -4,7 +4,8 @@ public class Pokemon {
    private String[] moveName;
    private int[] moveDamage;
    private Type[] moveType;
-   private int[] stats;
+   private int[] stats = new int[] { 0, 0, 0, 0, 0, 0 };
+   private static final int LEVEL = 5;
 
    // DEFAULT POKEMON
    public Pokemon() {
@@ -13,7 +14,7 @@ public class Pokemon {
       moveName = new String[] { "Scratch" };
       moveDamage = new int[] { 10 };
       moveType = new Type[] { Type.NORMAL };
-      stats = new int[] { 15, 5, 5, 5, 5, 10 };
+      stats = new int[] { 50, 50, 50, 50, 50, 50 };
    }
 
    // CHOSEN POKEMONS
@@ -43,8 +44,21 @@ public class Pokemon {
       this.moveType = moveType;
    }
 
-   public void setStats(int[] stats) {
-      this.stats = stats;
+   public void setStats(int[] baseStats) {
+      this.stats[0] = calcHP(baseStats[0]);
+      this.stats[1] = calcStat(baseStats[1]);
+      this.stats[2] = calcStat(baseStats[2]);
+      this.stats[3] = calcStat(baseStats[3]);
+      this.stats[4] = calcStat(baseStats[4]);
+      this.stats[5] = calcStat(baseStats[5]);
+   }
+
+   public int calcHP(int num) {
+      return (((int) (2 * num + 31)) * LEVEL) / 100 + LEVEL + 10;
+   }
+
+   public int calcStat(int num) {
+      return (((int) (2 * num + 31)) * LEVEL) / 100 + 5;
    }
 
    // RETURN THE MOVES OF THE POKEMON
@@ -76,12 +90,15 @@ public class Pokemon {
       return myType;
    }
 
-   public boolean equals(Object ob) {
-      boolean result = ob instanceof Pokemon;
-      if (result) {
-         Pokemon p = (Pokemon) ob;
-         result = this.name.equals(p.name);
+   public int getLevel() {
+      return LEVEL;
+   }
+
+   public double effectiveness(Type type) {
+      if (type == Type.GRASS || type == Type.FIRE || type == Type.WATER) {
+         return 2.0;
+      } else {
+         return 1.0;
       }
-      return result;
    }
 }
