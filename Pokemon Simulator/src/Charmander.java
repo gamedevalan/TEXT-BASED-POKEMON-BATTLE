@@ -2,7 +2,9 @@ public class Charmander extends Pokemon {
    private static String[] moveName = new String[] { "Scratch", "Ember" };
    private static int[] moveDamage = new int[] { 40, 40 };
    private static Type[] moveType = new Type[] { Type.NORMAL, Type.FIRE };
-   private static int[] stats = new int[] { 39, 52, 43, 60, 50, 65 };
+   private static Category[] moveCategory = new Category[] { Category.PHYSICAL, Category.SPECIAL };
+   private static int[] priority = new int[] { 0, 0 };
+   private static int[] baseStats = new int[] { 39, 52, 43, 60, 50, 65 };
 
    public Charmander() {
       super("CHARMANDER");
@@ -10,7 +12,9 @@ public class Charmander extends Pokemon {
       setMoves(moveName);
       setMoveDamage(moveDamage);
       setMoveType(moveType);
-      setStats(stats);
+      setStats(baseStats);
+      setMoveCategory(moveCategory);
+      setMovePriority(priority);
    }
 
    public void setType(Type myType) {
@@ -29,8 +33,16 @@ public class Charmander extends Pokemon {
       super.setMoveType(moveType);
    }
 
-   public void setStats(int[] stats) {
-      super.setStats(stats);
+   public void setMoveCategory(Category[] moveCategory) {
+      super.setMoveCategory(moveCategory);
+   }
+
+   public void setStats(int[] baseStats) {
+      super.setStats(baseStats);
+   }
+
+   public void setMovePriority(int[] priority) {
+      super.setMovePriority(priority);
    }
 
    public double effectiveness(Type type) {

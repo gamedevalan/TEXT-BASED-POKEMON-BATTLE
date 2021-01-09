@@ -2,8 +2,10 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class PokemonBattle {
-   public static final char MAX_POKEMONS_CHAR = '5';
+   // The amount of Pokémon classes created.
    public static final int MAX_POKEMONS = 5;
+
+   // What positions in the array are the specific stats located in?
    public static final int HEALTH_POINTS = 0;
    public static final int ATTACK = 1;
    public static final int DEFENSE = 2;
@@ -14,83 +16,119 @@ public class PokemonBattle {
    public static void main(String args[]) {
       Scanner scan = new Scanner(System.in);
       Random rand = new Random();
-      Pokemon[] enemies = new Pokemon[MAX_POKEMONS];
-      createEnemies(enemies);
+      Pokemon[] pokemonArr = new Pokemon[MAX_POKEMONS];
+      createPokemon(pokemonArr);
       boolean switchPokemon = true;
       while (switchPokemon) {
-         int choice = choosePokemon(scan);
-         Pokemon player = createPokemon(choice);
-         System.out.println("You chose... " + player.getName() + "!");
-         switchPokemon = playPokemon(scan, rand, player, enemies);
+         int choice = choosePokemon(scan, pokemonArr);
+         // get the Pokémon you chose from the array
+         Pokemon player = pokemonArr[choice - 1];
+         showPokemon(player);
+         switchPokemon = playPokemon(scan, rand, player, pokemonArr);
       }
    }
 
-   public static int choosePokemon(Scanner scan) {
+   // Create your opponent and put into an array.
+   public static void createPokemon(Pokemon[] pokemonArr) {
+      pokemonArr[0] = new Bulbasaur();
+      pokemonArr[1] = new Charmander();
+      pokemonArr[2] = new Squirtle();
+      pokemonArr[3] = new Pikachu();
+      pokemonArr[4] = new Eevee();
+   }
+
+   public static int choosePokemon(Scanner scan, Pokemon[] pokemonArr) {
       System.out.println("Who would you like to be your STARTER?");
-      System.out.println("1. Bulbasuar");
-      System.out.println("2. Charmander");
-      System.out.println("3. Squirtle");
-      System.out.println("4. Pikachu");
-      System.out.println("5. Eevee");
-      System.out.print("Enter a number. ");
-      // IN CASE USER INPUTS 'NOT A NUMBER'
-      char choice = scan.nextLine().charAt(0);
-      while (!(choice > '0' && choice <= MAX_POKEMONS_CHAR)) {
-         System.out.print("Not a valid number. Enter a number. ");
-         choice = scan.nextLine().charAt(0);
+      // list the Pokémon available
+      for (int i = 0; i < pokemonArr.length; i++) {
+         System.out.println(i + 1 + ". " + pokemonArr[i].getName().charAt(0)
+               + pokemonArr[i].getName().substring(1).toLowerCase());
       }
-      return choice - 48;
+      int choice = 0;
+      choice = validInput("Enter the number of the Pokémon you want: ", scan, choice,
+            pokemonArr.length);
+      return choice;
    }
 
-   public static Pokemon createPokemon(int choice) {
-      if (choice == 1) {
-         return new Bulbasaur();
-      } else if (choice == 2) {
-         return new Charmander();
-      } else if (choice == 3) {
-         return new Squirtle();
-      } else if (choice == 4) {
-         return new Pikachu();
-      } else {
-         return new Eevee();
+   // Checks if a valid input (number and between 1 to a max number)
+   public static int validInput(String prompt, Scanner scan, int choice, int limit) {
+      System.out.print(prompt);
+      boolean done = false;
+      while (!done) {
+         String num = scan.nextLine();
+         if (isNumeric(num)) {
+            choice = Integer.parseInt(num);
+            if (!(choice > 0 && choice <= limit)) {
+               System.out.print("NOT a valid number.\n\n" + prompt);
+            } else {
+               done = true;
+            }
+         } else {
+            System.out.print("NOT a valid number.\n\n" + prompt);
+         }
+      }
+      return choice;
+   }
+
+   // Check to see if the input is a number.
+   public static boolean isNumeric(String str) {
+      try {
+         // convert string to integer
+         Integer.parseInt(str);
+         return true;
+      } catch (NumberFormatException e) {
+         return false;
       }
    }
 
-   public static void createEnemies(Pokemon[] enemies) {
-      enemies[0] = new Bulbasaur();
-      enemies[1] = new Charmander();
-      enemies[2] = new Squirtle();
-      enemies[3] = new Pikachu();
-      enemies[4] = new Eevee();
+   // Show the stats of your chosen Pokémon.
+   public static void showPokemon(Pokemon player) {
+      System.out.println();
+      System.out.print("You chose... " + player.getName() + "!");
+      System.out.println(" (Level " + player.getLevel() + ")");
+      String[] stat = new String[] { "HP", "Attack", "Defense", "Sp.Attack", "Sp.Defense",
+            "Speed" };
+      System.out.printf("%s", stat[0]);
+      System.out.printf("%9s", stat[1]);
+      System.out.printf("%10s", stat[2]);
+      System.out.printf("%12s", stat[3]);
+      System.out.printf("%13s", stat[4]);
+      System.out.printf("%8s", stat[5]);
+      System.out.println();
+      System.out.printf("%s", player.getStats()[0]);
+      System.out.printf("%5s", player.getStats()[1]);
+      System.out.printf("%9s", player.getStats()[2]);
+      System.out.printf("%10s", player.getStats()[3]);
+      System.out.printf("%12s", player.getStats()[4]);
+      System.out.printf("%13s", player.getStats()[5]);
+      System.out.println();
+      System.out.println("------------------------------------------------------");
    }
 
-   public static boolean playPokemon(Scanner scan, Random rand, Pokemon player, Pokemon[] enemies) {
-
+   // Play the turns in Pokémon.
+   public static boolean playPokemon(Scanner scan, Random rand, Pokemon player,
+         Pokemon[] pokemonArr) {
       boolean playing = true;
       boolean switchPokemon = false;
       int enemyNum = 0;
 
       while (playing) {
+         System.out.println();
+         enemyNum = rand.nextInt(pokemonArr.length);
+         Pokemon opponent = pokemonArr[enemyNum];
          int[] myCurrentStats = createNewArray(player.getStats());
-         System.out.println();
-         enemyNum = rand.nextInt(MAX_POKEMONS);
-         Pokemon opponent = enemies[enemyNum];
-         System.out.println();
          System.out.println("A wild " + opponent.getName() + " appeared!");
          int[] oppCurrentStats = createNewArray(opponent.getStats());
          while (myCurrentStats[HEALTH_POINTS] > 0 && oppCurrentStats[HEALTH_POINTS] > 0) {
-            System.out.println("");
+            System.out.println();
             int moveChoice = chooseMove(player, opponent, scan);
+            int oppMoveChoice = rand.nextInt(opponent.numMoves()) + 1;
             String[] turnOrder = new String[] { "Player", "Opponent" };
             whoIsFaster(player, opponent, myCurrentStats[SPEED], oppCurrentStats[SPEED], turnOrder,
-                  rand);
+                  moveChoice, oppMoveChoice, rand);
             attackPhase(player, opponent, turnOrder, moveChoice, myCurrentStats, oppCurrentStats,
-                  rand);
-            System.out.println();
-            System.out.println(player.getName() + "'s health = " + myCurrentStats[HEALTH_POINTS]);
-            System.out.println("The opposing " + opponent.getName() + "'s health = "
-                  + oppCurrentStats[HEALTH_POINTS]);
-            System.out.println();
+                  oppMoveChoice, rand);
+            health(player, myCurrentStats[HEALTH_POINTS], opponent, oppCurrentStats[HEALTH_POINTS]);
          }
          playing = keepPlaying(scan);
          if (playing) {
@@ -104,6 +142,15 @@ public class PokemonBattle {
       return false;
    }
 
+   // Display the health info of both Pokémon.
+   public static void health(Pokemon player, int myHp, Pokemon opponent, int oppHp) {
+      System.out.println();
+      System.out.println(player.getName() + "'s HP = " + myHp + " / " + player.getHP());
+      System.out.println(
+            "The opposing " + opponent.getName() + "'s HP = " + oppHp + " / " + opponent.getHP());
+      System.out.println("------------------------------------------------------");
+   }
+
    // Create a copy of the stats without changing it
    public static int[] createNewArray(int[] arr) {
       int[] copiedStats = new int[arr.length];
@@ -113,69 +160,97 @@ public class PokemonBattle {
       return copiedStats;
    }
 
-   // Input move choice and see if it's valid
+   // Input move choice.
    public static int chooseMove(Pokemon player, Pokemon opponent, Scanner scan) {
-      char moveChoice = ' ';
-
-      while (!(moveChoice > '0' && moveChoice <= (char) (48 + player.numMoves()))) {
-         System.out.println("What will " + player.getName() + " do?");
-         for (int num = 1; num <= player.numMoves(); num++) {
-            System.out.println(num + ". " + player.getMove(num));
-         }
-         System.out.print("Enter number: ");
-         moveChoice = scan.nextLine().charAt(0);
-         if (!(moveChoice > '0' && moveChoice <= (char) (48 + player.numMoves()))) {
-            System.out.print("Not a valid number. ");
-         }
-      }
-      return moveChoice - 48;
+      int choice = 0;
+      whatWillAPokemonDo(player);
+      // checks if a valid input (number and between 1 - num moves)
+      choice = validInput(whatWillAPokemonDo(player), scan, choice, player.numMoves());
+      return choice;
    }
 
-   // Change the array if the opponent is faster (higher speed)
+   // Display move choices.
+   public static String whatWillAPokemonDo(Pokemon player) {
+      String prompt = "What will " + player.getName() + " do?\n";
+      for (int num = 1; num <= player.numMoves(); num++) {
+         prompt += num + ". " + player.getMove(num) + " -- TYPE: " + player.getMoveType(num)
+               + " -- POWER: " + player.getDamage(num) + " -- CATEGORY: "
+               + player.getMoveCategory(num) + "\n";
+      }
+      prompt += "Enter the move number: ";
+      return prompt;
+   }
+
+   // Change the array if the opponent is faster (higher speed/ priority).
    public static void whoIsFaster(Pokemon player, Pokemon opponent, int mySpeed, int oppSpeed,
-         String[] turnOrder, Random rand) {
-      if (oppSpeed > mySpeed) {
-         turnOrder[0] = "Opponent";
-         turnOrder[1] = "Player";
-      } else if (oppSpeed == mySpeed) {
-         int speedTie = rand.nextInt(2);
-         if (speedTie == 0) {
+         String[] turnOrder, int moveChoice, int oppMoveChoice, Random rand) {
+      if (player.getMovePriority(moveChoice) == opponent.getMovePriority(oppMoveChoice)) {
+         if (oppSpeed > mySpeed) {
             turnOrder[0] = "Opponent";
             turnOrder[1] = "Player";
+         } else if (oppSpeed == mySpeed) {
+            int speedTie = rand.nextInt(2);
+            if (speedTie == 0) {
+               turnOrder[0] = "Opponent";
+               turnOrder[1] = "Player";
+            }
          }
+      } else if (opponent.getMovePriority(oppMoveChoice) > player.getMovePriority(moveChoice)) {
+         turnOrder[0] = "Opponent";
+         turnOrder[1] = "Player";
       }
    }
 
-   // What moves were chosen?
+   // Play out the chosen moves.
    public static void attackPhase(Pokemon player, Pokemon opponent, String[] turnOrder,
-         int moveChoice, int[] myCurrentStats, int[] oppCurrentStats, Random rand) {
+         int moveChoice, int[] myCurrentStats, int[] oppCurrentStats, int oppMoveChoice,
+         Random rand) {
       String first = turnOrder[0];
-      int oppMoveChoice = rand.nextInt(opponent.numMoves()) + 1;
       if ("Player".equals(first)) {
-         printPrompt("PLAYER", player, moveChoice);
-         turn("PLAYER", oppCurrentStats, player, opponent, moveChoice, myCurrentStats[ATTACK],
-               oppCurrentStats[DEFENSE], rand);
+         printMovePrompt("PLAYER", player, moveChoice);
+         turn("PLAYER", oppCurrentStats, player, opponent, moveChoice,
+               myCurrentStats[whichAttackStat(player, moveChoice)],
+               oppCurrentStats[whichDefenseStat(player, moveChoice)], rand);
          if (oppCurrentStats[HEALTH_POINTS] > 0) {
-            printPrompt("OPPO", opponent, oppMoveChoice);
-            turn("OPPO", myCurrentStats, opponent, player, oppMoveChoice, oppCurrentStats[ATTACK],
-                  myCurrentStats[DEFENSE], rand);
+            printMovePrompt("OPPO", opponent, oppMoveChoice);
+            turn("OPPO", myCurrentStats, opponent, player, oppMoveChoice,
+                  oppCurrentStats[whichAttackStat(opponent, oppMoveChoice)],
+                  myCurrentStats[whichDefenseStat(opponent, oppMoveChoice)], rand);
          }
       }
 
       else {
-         printPrompt("OPPO", opponent, oppMoveChoice);
-         turn("OPPO", myCurrentStats, opponent, player, oppMoveChoice, oppCurrentStats[ATTACK],
-               myCurrentStats[DEFENSE], rand);
+         printMovePrompt("OPPO", opponent, oppMoveChoice);
+         turn("OPPO", myCurrentStats, opponent, player, oppMoveChoice,
+               oppCurrentStats[whichAttackStat(opponent, oppMoveChoice)],
+               myCurrentStats[whichDefenseStat(opponent, oppMoveChoice)], rand);
          if (myCurrentStats[HEALTH_POINTS] > 0) {
-            printPrompt("PLAYER", player, moveChoice);
-            turn("PLAYER", oppCurrentStats, player, opponent, moveChoice, myCurrentStats[ATTACK],
-                  oppCurrentStats[DEFENSE], rand);
+            printMovePrompt("PLAYER", player, moveChoice);
+            turn("PLAYER", oppCurrentStats, player, opponent, moveChoice,
+                  myCurrentStats[whichAttackStat(player, moveChoice)],
+                  oppCurrentStats[whichDefenseStat(player, moveChoice)], rand);
          }
       }
       faint(player, opponent, myCurrentStats, oppCurrentStats);
    }
 
-   // Faint display
+   public static int whichAttackStat(Pokemon currentPokemon, int moveChoice) {
+      if (currentPokemon.getMoveCategory(moveChoice) == Pokemon.Category.PHYSICAL) {
+         return ATTACK;
+      } else {
+         return SP_ATTACK;
+      }
+   }
+
+   public static int whichDefenseStat(Pokemon attacker, int moveChoice) {
+      if (attacker.getMoveCategory(moveChoice) == Pokemon.Category.PHYSICAL) {
+         return DEFENSE;
+      } else {
+         return SP_DEFENSE;
+      }
+   }
+
+   // Display who fainted.
    public static void faint(Pokemon player, Pokemon opponent, int[] myCurrentStats,
          int[] oppCurrentStats) {
       if (myCurrentStats[HEALTH_POINTS] <= 0) {
@@ -187,10 +262,10 @@ public class PokemonBattle {
       }
    }
 
-   // Print move prompt
-   public static void printPrompt(String who, Pokemon currentPokemon, int moveChoice) {
+   // Print what moves were chosen.
+   public static void printMovePrompt(String attacker, Pokemon currentPokemon, int moveChoice) {
       System.out.println();
-      if (who.equals("PLAYER")) {
+      if (attacker.equals("PLAYER")) {
          System.out.println(
                currentPokemon.getName() + " used " + currentPokemon.getMove(moveChoice) + "!");
       } else {
@@ -199,19 +274,19 @@ public class PokemonBattle {
       }
    }
 
-   // Change the health status
-   public static void turn(String who, int[] opponentStats, Pokemon currentPokemon,
+   // Change the health status.
+   public static void turn(String attacker, int[] opponentStats, Pokemon currentPokemon,
          Pokemon opponentPokemon, int moveChoice, int attackerStat, int defenderStat, Random rand) {
       int damage = calculateDamage(attackerStat, defenderStat, opponentPokemon, currentPokemon,
             moveChoice, rand);
       opponentStats[HEALTH_POINTS] -= damage;
-      if (who.equals("PLAYER")) {
+      if (attacker.equals("PLAYER")) {
          System.out.print("The opposing ");
       }
       System.out.println(opponentPokemon.getName() + " took " + damage + " damage!");
    }
 
-   // Calculate the damage number integer
+   // Calculate the damage calculate (integer).
    public static int calculateDamage(int attackStat, int defenseStat, Pokemon opponentPokemon,
          Pokemon currentPokemon, int moveChoice, Random rand) {
 
@@ -229,9 +304,10 @@ public class PokemonBattle {
       return damage;
    }
 
+   // Display the effectiveness of the chosen move.
    public static double typeEffectiveness(Pokemon opponentPokemon, Pokemon currentPokemon,
          int moveChoice) {
-      // Determines the effectiveness of a move to add to the multiplier
+      // determines the effectiveness of a move to add to the multiplier
       double typeEffectiveness = opponentPokemon
             .effectiveness(currentPokemon.getMoveType(moveChoice));
       if (typeEffectiveness == 0.5) {
@@ -242,6 +318,7 @@ public class PokemonBattle {
       return typeEffectiveness;
    }
 
+   // Asks if player wants to play again.
    public static boolean keepPlaying(Scanner scan) {
       System.out.println();
       System.out.print("Do you want to continue? ");
@@ -249,8 +326,9 @@ public class PokemonBattle {
       return answer == 'y';
    }
 
+   // Asks if player wants to switch Pokémon.
    public static boolean switchPokemon(Scanner scan) {
-      System.out.print("Would you like to switch Pokemon? ");
+      System.out.print("Would you like to switch Pokémon? ");
       char answer = scan.nextLine().toLowerCase().charAt(0);
       System.out.println();
       return answer == 'y';

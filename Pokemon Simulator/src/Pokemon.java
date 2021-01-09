@@ -4,30 +4,38 @@ public class Pokemon {
    private String[] moveName;
    private int[] moveDamage;
    private Type[] moveType;
+   private Category[] moveCategory;
+   private int[] priority;
    private int[] stats = new int[] { 0, 0, 0, 0, 0, 0 };
-   private static final int LEVEL = 5;
+   private static final int LEVEL = 10;
 
-   // DEFAULT POKEMON
+   // DEFAULT POKÉMON
    public Pokemon() {
       name = "Missingno";
       myType = Type.NORMAL;
       moveName = new String[] { "Scratch" };
       moveDamage = new int[] { 10 };
       moveType = new Type[] { Type.NORMAL };
+      moveCategory = new Category[] { Category.PHYSICAL };
+      priority = new int[] { 0 };
       stats = new int[] { 50, 50, 50, 50, 50, 50 };
    }
 
-   // CHOSEN POKEMONS
+   // CHOSEN POKÉMON
    public Pokemon(String name) {
       this.name = name;
    }
 
-   // TYPES
+   // WHAT IS THE MOVE?
    public static enum Type {
       ELECTRIC, FIRE, WATER, GRASS, NORMAL
    }
 
-   // CREATES THE MOVES OF THE POKEMON
+   public static enum Category {
+      PHYSICAL, SPECIAL
+   }
+
+   // CREATES THE MOVES OF THE POKÉMON
    public void setType(Type myType) {
       this.myType = myType;
    }
@@ -44,6 +52,15 @@ public class Pokemon {
       this.moveType = moveType;
    }
 
+   public void setMoveCategory(Category[] moveCategory) {
+      this.moveCategory = moveCategory;
+   }
+
+   public void setMovePriority(int[] priority) {
+      this.priority = priority;
+   }
+
+   // SETS THE STATS
    public void setStats(int[] baseStats) {
       this.stats[0] = calcHP(baseStats[0]);
       this.stats[1] = calcStat(baseStats[1]);
@@ -61,7 +78,7 @@ public class Pokemon {
       return (((int) (2 * num + 31)) * LEVEL) / 100 + 5;
    }
 
-   // RETURN THE MOVES OF THE POKEMON
+   // RETURN THE MOVES OF THE POKÉMON
    public String getName() {
       return name;
    }
@@ -82,8 +99,20 @@ public class Pokemon {
       return moveType[moveNum - 1];
    }
 
+   public Category getMoveCategory(int moveNum) {
+      return moveCategory[moveNum - 1];
+   }
+
+   public int getMovePriority(int moveNum) {
+      return priority[moveNum - 1];
+   }
+
    public int[] getStats() {
       return stats;
+   }
+
+   public int getHP() {
+      return stats[0];
    }
 
    public Type getMyType() {
@@ -94,6 +123,7 @@ public class Pokemon {
       return LEVEL;
    }
 
+   // RETURNS A DOUBLE DEPENDING ON EFFECTIVENESS
    public double effectiveness(Type type) {
       if (type == Type.GRASS || type == Type.FIRE || type == Type.WATER) {
          return 2.0;

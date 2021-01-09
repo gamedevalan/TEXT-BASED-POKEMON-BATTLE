@@ -2,7 +2,9 @@ public class Eevee extends Pokemon {
    private static String[] moveName = new String[] { "Tackle", "Quick Attack" };
    private static int[] moveDamage = new int[] { 40, 40 };
    private static Type[] moveType = new Type[] { Type.NORMAL, Type.NORMAL };
-   private static int[] stats = new int[] { 55, 55, 50, 45, 65, 55 };
+   private static Category[] moveCategory = new Category[] { Category.PHYSICAL, Category.PHYSICAL };
+   private static int[] priority = new int[] { 0, 1 };
+   private static int[] baseStats = new int[] { 55, 55, 50, 45, 65, 55 };
 
    public Eevee() {
       super("EEVEE");
@@ -10,7 +12,9 @@ public class Eevee extends Pokemon {
       setMoves(moveName);
       setMoveDamage(moveDamage);
       setMoveType(moveType);
-      setStats(stats);
+      setStats(baseStats);
+      setMoveCategory(moveCategory);
+      setMovePriority(priority);
    }
 
    public void setType(Type myType) {
@@ -29,8 +33,16 @@ public class Eevee extends Pokemon {
       super.setMoveType(moveType);
    }
 
-   public void setStats(int[] stats) {
-      super.setStats(stats);
+   public void setMoveCategory(Category[] moveCategory) {
+      super.setMoveCategory(moveCategory);
+   }
+
+   public void setMovePriority(int[] priority) {
+      super.setMovePriority(priority);
+   }
+
+   public void setStats(int[] baseStats) {
+      super.setStats(baseStats);
    }
 
    public double effectiveness(Type type) {
