@@ -8,7 +8,7 @@ public class Eevee extends Pokemon {
 
    public Eevee() {
       super("EEVEE");
-      setType(Type.NORMAL);
+      setType(Type.NORMAL, Type.NONE);
       setMoves(moveName);
       setMoveDamage(moveDamage);
       setMoveType(moveType);
@@ -17,8 +17,8 @@ public class Eevee extends Pokemon {
       setMovePriority(priority);
    }
 
-   public void setType(Type myType) {
-      super.setType(myType);
+   public void setType(Type myType, Type myType2) {
+      super.setType(myType, myType2);
    }
 
    public void setMoves(String[] moveName) {

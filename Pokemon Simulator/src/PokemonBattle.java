@@ -41,8 +41,13 @@ public class PokemonBattle {
       System.out.println("Who would you like to be your STARTER?");
       // list the Pokémon available
       for (int i = 0; i < pokemonArr.length; i++) {
-         System.out.println(i + 1 + ". " + pokemonArr[i].getName().charAt(0)
+         System.out.print(i + 1 + ". " + pokemonArr[i].getName().charAt(0)
                + pokemonArr[i].getName().substring(1).toLowerCase());
+         System.out.print(" - " + pokemonArr[i].getMyType()[0]);
+         if (pokemonArr[i].getMyType()[1] != Pokemon.Type.NONE) {
+            System.out.print(", " + pokemonArr[i].getMyType()[1]);
+         }
+         System.out.println();
       }
       int choice = 0;
       choice = validInput("Enter the number of the Pokémon you want: ", scan, choice,
@@ -289,11 +294,9 @@ public class PokemonBattle {
    // Calculate the damage calculate (integer).
    public static int calculateDamage(int attackStat, int defenseStat, Pokemon opponentPokemon,
          Pokemon currentPokemon, int moveChoice, Random rand) {
-
-      double STAB = currentPokemon.getMoveType(moveChoice) == currentPokemon.getMyType() ? 1.5 : 1; // Same
-                                                                                                    // Type
-                                                                                                    // Attack
-                                                                                                    // Bonus
+      // Same Type Attack Bonus
+      double STAB = currentPokemon.getMoveType(moveChoice) == currentPokemon.getMyType()[0]
+            || currentPokemon.getMoveType(moveChoice) == currentPokemon.getMyType()[1] ? 1.5 : 1;
       int damage = (((2 * currentPokemon.getLevel()) / 5 + 2) * currentPokemon.getDamage(moveChoice)
             * attackStat / defenseStat) / 50 + 2;
       double randomFactor = (85 + rand.nextInt(100 - 85 + 1)) / 100.0;

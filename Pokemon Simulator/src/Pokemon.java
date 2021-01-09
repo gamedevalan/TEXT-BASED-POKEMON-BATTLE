@@ -1,6 +1,6 @@
 public class Pokemon {
    private String name;
-   private Type myType;
+   private Type[] myType;
    private String[] moveName;
    private int[] moveDamage;
    private Type[] moveType;
@@ -12,7 +12,7 @@ public class Pokemon {
    // DEFAULT POKÉMON
    public Pokemon() {
       name = "Missingno";
-      myType = Type.NORMAL;
+      myType = new Type[] { Type.NORMAL, Type.NONE };
       moveName = new String[] { "Scratch" };
       moveDamage = new int[] { 10 };
       moveType = new Type[] { Type.NORMAL };
@@ -28,7 +28,7 @@ public class Pokemon {
 
    // WHAT IS THE MOVE?
    public static enum Type {
-      ELECTRIC, FIRE, WATER, GRASS, NORMAL
+      ELECTRIC, FIRE, WATER, GRASS, NORMAL, POISON, NONE
    }
 
    public static enum Category {
@@ -36,8 +36,8 @@ public class Pokemon {
    }
 
    // CREATES THE MOVES OF THE POKÉMON
-   public void setType(Type myType) {
-      this.myType = myType;
+   public void setType(Type myType, Type myType2) {
+      this.myType = new Type[] { myType, myType2 };
    }
 
    public void setMoves(String[] moveName) {
@@ -115,7 +115,7 @@ public class Pokemon {
       return stats[0];
    }
 
-   public Type getMyType() {
+   public Type[] getMyType() {
       return myType;
    }
 

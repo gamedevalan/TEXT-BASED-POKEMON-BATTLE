@@ -8,7 +8,7 @@ public class Squirtle extends Pokemon {
 
    public Squirtle() {
       super("SQUIRTLE");
-      setType(Type.WATER);
+      setType(Type.WATER, Type.NONE);
       setMoves(moveName);
       setMoveDamage(moveDamage);
       setMoveType(moveType);
@@ -17,8 +17,8 @@ public class Squirtle extends Pokemon {
       setMovePriority(priority);
    }
 
-   public void setType(Type myType) {
-      super.setType(myType);
+   public void setType(Type myType, Type myType2) {
+      super.setType(myType, myType2);
    }
 
    public void setMoves(String[] moveName) {

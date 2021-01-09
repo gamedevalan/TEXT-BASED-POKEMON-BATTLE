@@ -2,13 +2,13 @@ public class Bulbasaur extends Pokemon {
    private static String[] moveName = new String[] { "Tackle", "Vine Whip" };
    private static int[] moveDamage = new int[] { 40, 45 };
    private static Type[] moveType = new Type[] { Type.NORMAL, Type.GRASS };
-   private static Category[] moveCategory = new Category[] { Category.PHYSICAL, Category.SPECIAL };
+   private static Category[] moveCategory = new Category[] { Category.PHYSICAL, Category.PHYSICAL };
    private static int[] priority = new int[] { 0, 0 };
    private static int[] baseStats = new int[] { 45, 49, 49, 65, 65, 45 };
 
    public Bulbasaur() {
       super("BULBASAUR");
-      setType(Type.GRASS);
+      setType(Type.GRASS, Type.POISON);
       setMoves(moveName);
       setMoveDamage(moveDamage);
       setMoveType(moveType);
@@ -17,8 +17,8 @@ public class Bulbasaur extends Pokemon {
       setMovePriority(priority);
    }
 
-   public void setType(Type myType) {
-      super.setType(myType);
+   public void setType(Type myType, Type myType2) {
+      super.setType(myType, myType2);
    }
 
    public void setMoves(String[] moveName) {
